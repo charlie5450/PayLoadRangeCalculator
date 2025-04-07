@@ -1,86 +1,115 @@
 ﻿<Window x:Class="PayloadRangeCalculator.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"        
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="항공기 항속 거리 계산기" Height="500" Width="370">
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        Title="항속거리 계산기" Height="650" Width="550"
+        Background="#f5f5f5"
+        WindowStartupLocation="CenterScreen">
 
-        <TextBlock Text="항속 거리 계산기 ✈️" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
-        
-        <StackPanel Orientation="Vertical" Margin="30">
-            <TextBlock Text="OEW" />
-            <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="OEWTextBox" Width="150" TextChanged="NumericTextBox_TextChanged"/>
-                <ComboBox x:Name="OEWUnitComboBox" Width="60" Margin="10,0,0,0">
+    <Border CornerRadius="10" Background="White" Padding="30" Margin="20" BorderBrush="#ddd" BorderThickness="1">
+        <StackPanel>
+
+            <TextBlock Text="항속거리 계산기" FontSize="22" FontWeight="Bold" Margin="0 0 0 20"/>
+
+            <!-- 입력 그룹 -->
+            <!-- OEW -->
+            <Grid Margin="0 0 0 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="OEW (자체 중량)" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBox x:Name="OewTextBox" TextChanged="FormatNumberWithComma" Grid.Column="1" Margin="5" Height="30"/>
+                <ComboBox x:Name="OewUnitComboBox" Grid.Column="2" Margin="5" Height="30">
                     <ComboBoxItem Content="kg" IsSelected="True"/>
                     <ComboBoxItem Content="lb"/>
                 </ComboBox>
-            </StackPanel>
+            </Grid>
 
-            <TextBlock Text="Payload" />
-            <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="PayloadTextBox" Width="150" TextChanged="NumericTextBox_TextChanged"/>
-                <ComboBox x:Name="PayloadUnitComboBox" Width="60" Margin="10,0,0,0">
+            <!-- Payload -->
+            <Grid Margin="0 0 0 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Payload (탑재 하중)" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBox x:Name="PayloadTextBox" TextChanged="FormatNumberWithComma" Grid.Column="1" Margin="5" Height="30"/>
+                <ComboBox x:Name="PayloadUnitComboBox" Grid.Column="2" Margin="5" Height="30">
                     <ComboBoxItem Content="kg" IsSelected="True"/>
                     <ComboBoxItem Content="lb"/>
                 </ComboBox>
-            </StackPanel>
+            </Grid>
 
-            <TextBlock Text="Fuel" />
-            <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="FuelTextBox" Width="150" TextChanged="NumericTextBox_TextChanged"/>
-                <ComboBox x:Name="FuelUnitComboBox" Width="60" Margin="10,0,0,0">
+            <!-- 연료 중량 -->
+            <Grid Margin="0 0 0 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="연료 중량" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBox x:Name="FuelWeightTextBox" TextChanged="FormatNumberWithComma" Grid.Column="1" Margin="5" Height="30"/>
+                <ComboBox x:Name="FuelWeightUnitComboBox" Grid.Column="2" Margin="5" Height="30">
                     <ComboBoxItem Content="kg" IsSelected="True"/>
                     <ComboBoxItem Content="lb"/>
                 </ComboBox>
-            </StackPanel>
+            </Grid>
 
-            <TextBlock Text="Velocity" />
-            <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="VelocityTextBox" Width="150" TextChanged="NumericTextBox_TextChanged"/>
-                <ComboBox x:Name="VelocityUnitComboBox" Width="80" Margin="10,0,0,0">
+            <!-- 속도 -->
+            <Grid Margin="0 0 0 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="속도" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBox x:Name="VelocityTextBox" TextChanged="FormatNumberWithComma" Grid.Column="1" Margin="5" Height="30"/>
+                <ComboBox x:Name="VelocityUnitComboBox" Grid.Column="2" Margin="5" Height="30">
                     <ComboBoxItem Content="km/h" IsSelected="True"/>
-                    <ComboBoxItem Content="knots"/>
-                    <ComboBoxItem Content="mph"/>
+                    <ComboBoxItem Content="m/s"/>
                 </ComboBox>
-            </StackPanel>
+            </Grid>
 
-            <TextBlock Text="SFC (Specific Fuel Consumption)" />
-            <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="SFCTextBox" Width="150" TextChanged="NumericTextBox_TextChanged"/>
-                <ComboBox x:Name="SFCUnitComboBox" Width="80" Margin="10,0,0,0">
-                    <ComboBoxItem Content="kg/hr" IsSelected="True"/>
-                    <ComboBoxItem Content="lb/hr"/>
+            <!-- L/D -->
+            <Grid Margin="0 0 0 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="L/D 비율" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBox x:Name="LDTextBox" TextChanged="FormatNumberWithComma" Grid.Column="1" Margin="5" Height="30"/>
+            </Grid>
+
+            <!-- SFC -->
+            <Grid Margin="0 0 0 20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="SFC (단위 연료 소비율)" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBox x:Name="SFCTextBox" TextChanged="FormatNumberWithComma" Grid.Column="1" Margin="5" Height="30"/>
+                <ComboBox x:Name="SFCUnitComboBox" Grid.Column="2" Margin="5" Height="30">
+                    <ComboBoxItem Content="1/hr" IsSelected="True"/>
+                    <ComboBoxItem Content="1/s"/>
                 </ComboBox>
-            </StackPanel>
+            </Grid>
 
-            <TextBlock Text="L/D (Lift-to-Drag Ratio)" />
-            <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="LDTextBox" Width="150" TextChanged="NumericTextBox_TextChanged" Height="23"/>
-                <!-- 빈 ComboBox 자리는 필요 없다면 생략 가능 -->
-            </StackPanel>
+            <!-- 계산 버튼 -->
+            <Button Content="계산" Width="120" Height="36"
+                    Background="#007bff" Foreground="White" BorderBrush="#007bff"
+                    FontWeight="Bold" HorizontalAlignment="Center"
+                    Click="CalculateRange_Click" Margin="0 0 0 20"
+                    Cursor="Hand"/>
 
-
-            <Button Content="계산"
-        Width="100"
-        Margin="0,10,0,0"
-        HorizontalAlignment="Center"
-        Click="CalculateRange_Click"/>
-
-
-            <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                <TextBlock Text="항속 거리: " />
-                <TextBlock x:Name="RangeOutputText" FontWeight="Bold"/>
-                <ComboBox x:Name="RangeUnitComboBox" Width="60" Margin="10,0,0,0">
-                    <ComboBoxItem Content="km" IsSelected="True"/>
-                    <ComboBoxItem Content="NM"/>
-                    <ComboBoxItem Content="mi"/>
-                </ComboBox>
-            </StackPanel>
+            <!-- 결과 텍스트 -->
+            <TextBlock x:Name="ResultTextBlock" FontSize="16" FontWeight="Bold"
+                       Foreground="#333" TextAlignment="Center" Margin="0 0 0 20"/>
         </StackPanel>
-
-    </Grid>
+    </Border>
 </Window>

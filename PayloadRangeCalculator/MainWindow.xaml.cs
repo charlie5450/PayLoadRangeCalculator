@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LiveCharts.Wpf;
+using LiveCharts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,105 +30,72 @@ namespace PayloadRangeCalculator
 
         private void CalculateRange_Click(object sender, RoutedEventArgs e)
         {
-            double oew = ToKg(ParseText(OEWTextBox), GetUnit(OEWUnitComboBox));
-            double payload = ToKg(ParseText(PayloadTextBox), GetUnit(PayloadUnitComboBox));
-            double fuel = ToKg(ParseText(FuelTextBox), GetUnit(FuelUnitComboBox));
-            double velocity = ToKmPerHr(ParseText(VelocityTextBox), GetUnit(VelocityUnitComboBox));
-            double sfc = ToKgPerHr(ParseText(SFCTextBox), GetUnit(SFCUnitComboBox));
-            double ld = ParseText(LDTextBox);
-
-            double totalWeight = oew + payload;
-            double range_km = (velocity / sfc) * ld * Math.Log(totalWeight / (totalWeight - fuel));
-
-            double final = FromKm(range_km, GetUnit(RangeUnitComboBox));
-            RangeOutputText.Text = $"{final:N2}";
-        }
-
-        private double ParseText(TextBox tb)
-        {
-            return double.TryParse(tb.Text.Replace(",", ""), out double v) ? v : 0;
-        }
-        private string GetUnit(ComboBox cb)
-        {
-            return ((ComboBoxItem)cb.SelectedItem).Content.ToString();
-        }
-
-
-        private string AddComma(string input)
-        {
-            if (double.TryParse(input.Replace(",", ""), out double number))
+            try
             {
-                return string.Format("{0:N0}", number); // 소수점 없이 콤마 포함
+                double oew = ParseInput(OewTextBox.Text);
+                double payload = ParseInput(PayloadTextBox.Text);
+                double fuelWeight = ParseInput(FuelWeightTextBox.Text);
+                double velocity = ParseInput(VelocityTextBox.Text);
+                double ldRatio = ParseInput(LDTextBox.Text);
+                double sfc = ParseInput(SFCTextBox.Text);
+
+                // 단위 변환
+                if (((ComboBoxItem)OewUnitComboBox.SelectedItem)?.Content.ToString() == "lb")
+                    oew *= 0.453592;
+                if (((ComboBoxItem)PayloadUnitComboBox.SelectedItem)?.Content.ToString() == "lb")
+                    payload *= 0.453592;
+                if (((ComboBoxItem)FuelWeightUnitComboBox.SelectedItem)?.Content.ToString() == "lb")
+                    fuelWeight *= 0.453592;
+                if (((ComboBoxItem)VelocityUnitComboBox.SelectedItem)?.Content.ToString() == "m/s")
+                    velocity *= 3.6;
+                if (((ComboBoxItem)SFCUnitComboBox.SelectedItem)?.Content.ToString() == "1/s")
+                    sfc *= 3600;
+
+                // 자동 계산된 초기 중량
+                double initialWeight = oew + payload + fuelWeight;
+                double finalWeight = initialWeight - fuelWeight;
+
+                if (finalWeight <= 0) throw new Exception("연료 중량이 초기 중량보다 많습니다.");
+
+                double range = (velocity / sfc) * ldRatio * Math.Log(initialWeight / finalWeight);
+
+                ResultTextBlock.Text = $"예상 항속거리: {range:N2} km";
             }
-            return input;
+            catch (Exception ex)
+            {
+                MessageBox.Show($"오류: {ex.Message}", "입력 오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
-        private void NumericTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void FormatNumberWithComma(object sender, TextChangedEventArgs e)
         {
-            var tb = sender as System.Windows.Controls.TextBox;
-            if (tb == null) return;
+            var textbox = sender as TextBox;
+            if (textbox == null) return;
 
-            string raw = tb.Text.Replace(",", "");
+            string input = textbox.Text;
 
-            // 소수점 한 개만 허용하고, 나머지는 제거
-            int dotCount = raw.Count(c => c == '.');
-            if (dotCount > 1)
-            {
-                // 두 개 이상 소수점 찍은 경우 제거
-                int firstDot = raw.IndexOf('.');
-                raw = raw.Substring(0, firstDot + 1) + raw.Substring(firstDot + 1).Replace(".", "");
-            }
-
-            if (!double.TryParse(raw, out double number)) return;
-
-            // 커서 위치 저장
-            int caret = tb.CaretIndex;
-            int oldLength = tb.Text.Length;
-
-            // 소수점 입력 중이라면 포맷하지 않음 (맨 끝이 "." 또는 ".0"일 때 등)
-            if (raw.EndsWith(".") || Regex.IsMatch(raw, @"\.\d{0,2}$"))
-            {
+            // 입력 중간 상태 예외 처리 (".", ".0", "0.", "0.0" 등)
+            if (string.IsNullOrEmpty(input) || input.EndsWith(".") || Regex.IsMatch(input, @"\.\d{0,2}$"))
                 return;
-            }
 
-            // 소수점 둘째 자리까지 포맷
-            string formatted = string.Format("{0:N0}", number);
+            string raw = input.Replace(",", "");
 
-            if (tb.Text != formatted)
+            if (double.TryParse(raw, out double value))
             {
-                tb.Text = formatted;
-                int diff = tb.Text.Length - oldLength;
-                tb.CaretIndex = Math.Max(0, caret + diff);
+                string formatted = value.ToString("#,##0.##"); // 천 단위 콤마 + 소수점 2자리까지
+                if (formatted != input)
+                {
+                    int caret = textbox.SelectionStart;
+                    textbox.Text = formatted;
+                    textbox.SelectionStart = Math.Min(caret + 1, textbox.Text.Length);
+                }
             }
         }
 
-        private double ToKg(double value, string unit) => unit == "lb" ? value * 0.453592 : value;
-        private double ToKmPerHr(double value, string unit)
+        private double ParseInput(string text)
         {
-            switch (unit)
-            {
-                case "knots":
-                    return value * 1.852;
-                case "mph":
-                    return value * 1.60934;
-                default:
-                    return value;
-            }
+            string clean = text.Replace(",", "");
+            return double.Parse(clean);
         }
-        private double ToKgPerHr(double value, string unit) => unit == "lb/hr" ? value * 0.453592 : value;
-        private double FromKm(double value, string targetUnit)
-        {
-            switch (targetUnit)
-            {
-                case "NM":
-                    return value / 1.852;
-                case "mi":
-                    return value / 1.60934;
-                default:
-                    return value;
-            }
-        }
-
-
     }
 }
