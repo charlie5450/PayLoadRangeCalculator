@@ -1,0 +1,14 @@
+C:\Users\USER\source\repos\PayloadRangeCalculator\PayloadRangeCalculator\bin\Debug\PayloadRangeCalculator.exe.config
+C:\Users\USER\source\repos\PayloadRangeCalculator\PayloadRangeCalculator\bin\Debug\PayloadRangeCalculator.exe
+C:\Users\USER\source\repos\PayloadRangeCalculator\PayloadRangeCalculator\bin\Debug\PayloadRangeCalculator.pdb
+C:\Users\USER\source\repos\PayloadRangeCalculator\PayloadRangeCalculator\obj\Debug\PayloadRangeCalculator.csproj.AssemblyReference.cache
+C:\Users\USER\source\repos\PayloadRangeCalculator\PayloadRangeCalculator\obj\Debug\MainWindow.baml
+C:\Users\USER\source\repos\PayloadRangeCalculator\PayloadRangeCalculator\obj\Debug\MainWindow.g.cs
+C:\Users\USER\source\repos\PayloadRangeCalculator\PayloadRangeCalculator\obj\Debug\App.g.cs
+C:\Users\USER\source\repos\PayloadRangeCalculator\PayloadRangeCalculator\obj\Debug\PayloadRangeCalculator_MarkupCompile.cache
+C:\Users\USER\source\repos\PayloadRangeCalculator\PayloadRangeCalculator\obj\Debug\PayloadRangeCalculator.g.resources
+C:\Users\USER\source\repos\PayloadRangeCalculator\PayloadRangeCalculator\obj\Debug\PayloadRangeCalculator.Properties.Resources.resources
+C:\Users\USER\source\repos\PayloadRangeCalculator\PayloadRangeCalculator\obj\Debug\PayloadRangeCalculator.csproj.GenerateResource.cache
+C:\Users\USER\source\repos\PayloadRangeCalculator\PayloadRangeCalculator\obj\Debug\PayloadRangeCalculator.csproj.CoreCompileInputs.cache
+C:\Users\USER\source\repos\PayloadRangeCalculator\PayloadRangeCalculator\obj\Debug\PayloadRangeCalculator.exe
+C:\Users\USER\source\repos\PayloadRangeCalculator\PayloadRangeCalculator\obj\Debug\PayloadRangeCalculator.pdb
