@@ -15,7 +15,7 @@
 
 ## 🖼️ 실행 화면
 
-![screenshot](./screenshot.png)  
+![screenshot](./screenshot_v2.png)  
 
 ---
 
